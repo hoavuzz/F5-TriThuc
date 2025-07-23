@@ -1,0 +1,97 @@
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #1a1a1a;
+      color: #333;
+    }
+    header {
+      background-color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 50px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    header .logo {
+      font-weight: bold;
+      color: orange;
+      font-size: 24px;
+    }
+    nav a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #333;
+    }
+    .banner {
+      background-color: orange;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 24px;
+    }
+    .section {
+      background-color: #fff;
+      padding: 40px 50px;
+    }
+    .section h2 {
+      margin-bottom: 20px;
+    }
+    .course-list {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+    .course-card {
+      background-color: #fbeae1;
+      width: 240px;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .course-card img {
+      width: 100%;
+      border-radius: 5px;
+    }
+    .course-card .title {
+      font-weight: bold;
+      margin: 10px 0 5px;
+      text-align: center;
+    }
+    .course-card .author, .course-card .price {
+      font-size: 14px;
+      margin: 2px 0;
+    }
+    .course-card .stars {
+      color: #f39c12;
+      margin: 5px 0;
+    }
+    footer {
+      background-color: #000;
+      color: #fff;
+      padding: 40px 50px;
+      font-size: 14px;
+    }
+    footer .footer-cols {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    footer .col {
+      flex: 1;
+      margin: 10px;
+      min-width: 180px;
+    }
+    footer a {
+      color: #ccc;
+      text-decoration: none;
+      display: block;
+      margin-top: 5px;
+    }
+ 
