@@ -94,4 +94,36 @@
       display: block;
       margin-top: 5px;
     }
- 
+ /* Dropdown container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Nội dung menu ẩn */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  min-width: 160px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  z-index: 999;
+  border-radius: 6px;
+}
+
+/* Style cho từng item trong menu */
+.dropdown-content a {
+  color: #333;
+  padding: 10px 14px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+/* Khi có class "show" thì hiển thị menu */
+.show {
+  display: block;
+}

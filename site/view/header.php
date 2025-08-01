@@ -9,14 +9,64 @@
 
 </head>
 <body>
-  <header>
-    
-    <div class="logo">F5</div>
-    <nav>
-      <a href="#">Khóa học</a>
-      <a href="#">Tài liệu</a>
-      <a href="#">Về chúng tôi</a>
-      <a href="#">Đăng ký</a>
-      <a href="#">Đăng nhập</a>
-    </nav>
-  </header>
+<header>
+  <div class="logo">F5</div>
+  <nav>
+    <a href="#">Khóa học</a>
+    <a href="#">Tài liệu</a>
+    <a href="#">Về chúng tôi</a>
+
+    <!-- Nếu chưa đăng nhập -->
+    <?php if (!isset($_SESSION['user'])): ?>
+      <div class="dropdown">
+        <a href="javascript:void(0)" onclick="toggleDropdown('regDropdown')">Đăng ký</a>
+        <div id="regDropdown" class="dropdown-content">
+          <a href="index.php?mod=user&act=registerStudent">Đăng ký Sinh viên</a>
+          <a href="index.php?mod=user&act=registerTeacher">Đăng ký Giảng viên</a>
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <a href="javascript:void(0)" onclick="toggleDropdown('loginDropdown')">Đăng nhập</a>
+        <div id="loginDropdown" class="dropdown-content">
+          <a href="index.php?mod=user&act=loginStudent">Đăng nhập Sinh viên</a>
+          <a href="index.php?mod=user&act=loginTeacher">Đăng nhập Giảng viên</a>
+        </div>
+      </div>
+    <?php else: ?>
+      <!-- Nếu đã đăng nhập -->
+      <div class="dropdown">
+        <a href="javascript:void(0)" onclick="toggleDropdown('userDropdown')">
+          👤 <?php echo htmlspecialchars($_SESSION['user']['username']); ?>
+        </a>
+        <div id="userDropdown" class="dropdown-content">
+          <a href="#">Thông tin cá nhân</a>
+          <a href="index.php?mod=user&act=logout">Đăng xuất</a>
+        </div>
+      </div>
+    <?php endif; ?>
+  </nav>
+</header>
+
+<script>
+  function toggleDropdown(id) {
+    let dropdowns = document.getElementsByClassName("dropdown-content");
+    for (let i = 0; i < dropdowns.length; i++) {
+      if (dropdowns[i].id !== id) {
+        dropdowns[i].classList.remove("show");
+      }
+    }
+    document.getElementById(id).classList.toggle("show");
+  }
+
+  // Ẩn dropdown khi click ra ngoài
+  window.onclick = function(e) {
+    if (!e.target.closest('.dropdown')) {
+      let dropdowns = document.getElementsByClassName("dropdown-content");
+      for (let i = 0; i < dropdowns.length; i++) {
+        dropdowns[i].classList.remove("show");
+      }
+    }
+  }
+</script>
+
