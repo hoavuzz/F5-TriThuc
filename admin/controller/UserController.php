@@ -1,8 +1,8 @@
 <?php
-require_once "conf.php";               
-require_once "../admin/model/UserModel.php";   
+require_once "conf.php";
+require_once "../admin/model/UserModel.php";
 
-$UserModel = new UserModel($pdo);              
+$UserModel = new UserModel($pdo);
 
 $act = isset($_GET['act']) ? $_GET['act'] : 'list';
 
@@ -37,8 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
 
 switch ($act) {
     case 'list':
-        $users = $UserModel->getAllUsers(); 
-        include "../admin/view/user_admin.php"; 
+        $users = $UserModel->getAllUsers();
+        include "../admin/view/user_admin.php";
         break;
 
     case 'delete':
@@ -46,6 +46,33 @@ switch ($act) {
         $UserModel->deleteUserById($_GET['id']);
         header("Location: index.php?mod=user&act=list");
         break;
+    case 'approveTeacher':
+        $user_id = $_GET['user_id'] ?? 0;
+
+        if ($user_id) {
+            // 1. Cập nhật status = 1 (đã duyệt)
+            $UserModel->updateStatus($user_id, 1);
+
+            // 2. Kiểm tra xem đã có trong bảng teachers chưa
+            $sql = "SELECT * FROM teachers WHERE user_id = ?";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$user_id]);
+            $teacher = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$teacher) {
+                // 3. Nếu chưa thì thêm mới
+                $UserModel->addTeacher($user_id);
+            }
+
+            // Quay về danh sách giáo viên chờ duyệt
+            header("Location: index.php?mod=user&act=listTeachers");
+            exit;
+        } else {
+            echo "Thiếu user_id!";
+        }
+        break;
+
+
 
     default:
         echo "Không tìm thấy chức năng!";

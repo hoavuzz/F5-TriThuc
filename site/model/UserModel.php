@@ -49,6 +49,18 @@ class UserModel {
             ':id'     => $userId
         ]);
     }
+    //student sửa thông tin cá nhân
+    public function updateUser($user_id, $data) {
+    $sql = "UPDATE users SET username = ?, email = ?, phone = ?, updated_at = NOW() WHERE user_id = ?";
+    $stmt = $this->db->prepare($sql);
+    return $stmt->execute([
+        $data['username'],
+        $data['email'],
+        $data['phone'],
+        $user_id
+    ]);
+}
+
 
     // Lấy danh sách teacher đang chờ duyệt
     public function getPendingTeachers() {
@@ -56,4 +68,16 @@ class UserModel {
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function getPurchasedCourses($user_id) {
+    $sql = "SELECT c.course_id, c.name, c.language, c.price, c.updated_at
+            FROM orders o
+            JOIN order_items oi ON o.order_id = oi.order_id
+            JOIN courses c ON oi.course_id = c.course_id
+            WHERE o.user_id = ?
+            ORDER BY o.created_at DESC";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([$user_id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 }

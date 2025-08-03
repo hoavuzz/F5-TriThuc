@@ -40,7 +40,7 @@
           👤 <?php echo htmlspecialchars($_SESSION['user']['username']); ?>
         </a>
         <div id="userDropdown" class="dropdown-content">
-          <a href="#">Thông tin cá nhân</a>
+          <a href="index.php?mod=user&act=profile">Thông tin cá nhân</a>
           <a href="index.php?mod=user&act=logout">Đăng xuất</a>
         </div>
       </div>

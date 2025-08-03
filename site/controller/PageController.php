@@ -1,40 +1,40 @@
 <?php
-//quản lí home, abuot...
 $act = isset($_GET['act']) ? $_GET['act'] : 'home';
+
 switch ($act) {
     case 'home':
+        include_once "../site/model/Course.php";
+        require_once("model/Category.php");
+        $courseModel = new Course();
+        $categoryModel = new Category();
+        $courses = $courseModel->getAllCourses(); // hoặc khóa học nổi bật
+        $freeCourses = $courseModel->getFreeCourses(6);
+        $mostViewedCourses = $courseModel->getMostViewedCourses(6);
         include_once "../site/view/home.php";
         break;
-    case 'about':
-        //xử lí dữ liệu
-
-        //hiển thị ra view
-        include_once "../site/views/page.about.php";
-        break;
-
-    case 'contact':
-        //xử lí dữ liệu
-
-        //hiển thị ra view
-        include_once "../site/views/page.contact.php";
-        break;
+    case 'detail':
+        if (isset($_GET['id'])) {
+            $course = $courseModel->getCourseById($_GET['id']);
+            include_once "../site/view/course_detail.php";
+        } else {
+            echo "Không tìm thấy ID khóa học!";
+        }
         
-         case 'contact':
-        //xử lí dữ liệu
-
-        //hiển thị ra view
-        include_once "../site/views/page.contact.php";
         break;
-    case 'search':
-        //xử lí dữ liệu
-        // $keyword = $_GET['keyword'];
-        // $ProductModel =new ();
-        // $productlist =$ProductModel ->search($keyword);
-        //hiển thị ra view
-        include_once "../site/views/product.search.php";
+    case 'category':
+        require_once("model/Category.php");
+        if (isset($_GET['id'])) {
+            $category_id = $_GET['id'];
+            $courses = $courseModel->getByCategory($category_id);
+            require_once("view/course_list.php");
+        } else {
+            echo "Không tìm thấy danh mục.";
+        }
         break;
+    
 
     default:
-        # code...
+        echo "404 - Trang không tồn tại";
         break;
 }
+?>

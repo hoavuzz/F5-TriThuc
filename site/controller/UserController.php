@@ -188,6 +188,46 @@ switch ($act) {
         session_destroy();
         header("Location: index.php");
         break;
+    // ==== PROFILE USER ====
+    case 'profile':
+        if (!isset($_SESSION['user'])) {
+            header("Location: index.php?mod=user&act=loginStudent");
+            exit;
+        }
+
+        $user_id = $_SESSION['user']['user_id'];
+        $user = $UserModel->getUserById($user_id);
+
+        // Nếu submit form update
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $username = $_POST['username'] ?? $user['username'];
+            $email    = $_POST['email'] ?? $user['email'];
+            $phone    = $_POST['phone'] ?? $user['phone'];
+
+            $data = [
+                'username' => trim($username),
+                'email'    => trim($email),
+                'phone'    => trim($phone)
+            ];
+
+            $updated = $UserModel->updateUser($user_id, $data);
+
+            if ($updated) {
+                // Cập nhật lại session
+                $_SESSION['user']['username'] = $data['username'];
+                $_SESSION['user']['email']    = $data['email'];
+                $success = "Cập nhật thông tin thành công!";
+                $user = $UserModel->getUserById($user_id); // load lại dữ liệu
+            } else {
+                $error = "Không thể cập nhật thông tin!";
+            }
+        }
+
+        // Lấy danh sách khóa học đã mua
+        $courses = $UserModel->getPurchasedCourses($user_id);
+
+        include "../site/view/profile_student.php";
+        break;
 
     default:
         echo "Không tìm thấy chức năng phù hợp!";

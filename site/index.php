@@ -14,11 +14,12 @@ switch ($ctrl) {
 
         include_once "../site/controller/UserController.php";
         break;
-    case 'product':
-        include_once "../site/controllers/ProductController.php";
-        break;
+   
     case 'cart';
-        include_once "../site/controllers/cartcontroller.php";
+        include_once "../site/controller/cartcontroller.php";
+        break;
+        case 'course':
+        include_once "../site/controller/CourseController.php";
         break;
     default:
 
