@@ -31,9 +31,9 @@ switch ($act) {
             } else {
                 $errorLogin = "Tài khoản sinh viên không tồn tại!";
             }
-            include "../site/view/login_student.php";
+            include "../site/view/login/login_student.php";
         } else {
-            include "../site/view/login_student.php";
+            include "../site/view/login/login_student.php";
         }
         break;
 
@@ -49,7 +49,7 @@ switch ($act) {
                 if ($password === $user['password']) { // so sánh mật khẩu thường
                     if ($user['status'] == 0) {
                         $errorLogin = "Tài khoản giảng viên của bạn đang chờ admin duyệt!";
-                        include "../site/view/login_teacher.php";
+                        include "../site/view/login/login_teacher.php";
                         exit;
                     }
                     $_SESSION['user'] = [
@@ -66,9 +66,9 @@ switch ($act) {
             } else {
                 $errorLogin = "Tài khoản giảng viên không tồn tại!";
             }
-            include "../site/view/login_teacher.php";
+            include "../site/view/login/login_teacher.php";
         } else {
-            include "../site/view/login_teacher.php";
+            include "../site/view/login/login_teacher.php";
         }
         break;
 
@@ -83,7 +83,7 @@ switch ($act) {
 
             if ($password !== $confirm) {
                 $error = "Mật khẩu không khớp!";
-                include "../site/view/register_student.php";
+                include "../site/view/login/register_student.php";
             } else {
                 $data = [
                     'username'     => $username,
@@ -100,11 +100,11 @@ switch ($act) {
                     exit;
                 } else {
                     $error = "Đăng ký thất bại. Email có thể đã tồn tại!";
-                    include "../site/view/register_student.php";
+                    include "../site/view/login/register_student.php";
                 }
             }
         } else {
-            include "../site/view/register_student.php";
+            include "../site/view/login/register_student.php";
         }
         break;
 
@@ -119,13 +119,13 @@ switch ($act) {
 
             if ($password !== $confirm) {
                 $error = "Mật khẩu không khớp!";
-                include "../site/view/register_teacher.php";
+                include "../site/login/view/register_teacher.php";
                 break;
             }
 
             if (!isset($_FILES['teacher_file']) || $_FILES['teacher_file']['error'] !== UPLOAD_ERR_OK) {
                 $error = "Vui lòng tải lên file chứng minh!";
-                include "../site/view/register_teacher.php";
+                include "../site/view/login/register_teacher.php";
                 break;
             }
 
@@ -135,13 +135,13 @@ switch ($act) {
 
             if (!in_array($ext, $allowed)) {
                 $error = "File không hợp lệ! Chỉ chấp nhận JPG, PNG, PDF.";
-                include "../site/view/register_teacher.php";
+                include "../site/view/login/register_teacher.php";
                 break;
             }
 
             if ($file['size'] > 2 * 1024 * 1024) {
                 $error = "File quá lớn! Tối đa 2MB.";
-                include "../site/view/register_teacher.php";
+                include "../site/view/login/register_teacher.php";
                 break;
             }
 
@@ -155,7 +155,7 @@ switch ($act) {
 
             if (!move_uploaded_file($file['tmp_name'], $uploadPath)) {
                 $error = "Không thể lưu file upload!";
-                include "../site/view/register_teacher.php";
+                include "../site/view/login/register_teacher.php";
                 break;
             }
 
@@ -176,10 +176,10 @@ switch ($act) {
                 exit;
             } else {
                 $error = "Đăng ký thất bại. Email có thể đã tồn tại!";
-                include "../site/view/register_teacher.php";
+                include "../site/view/login/register_teacher.php";
             }
         } else {
-            include "../site/view/register_teacher.php";
+            include "../site/view/login/register_teacher.php";
         }
         break;
 
@@ -189,8 +189,9 @@ switch ($act) {
         header("Location: index.php");
         break;
     // ==== PROFILE USER ====
-    case 'profile':
-        if (!isset($_SESSION['user'])) {
+    // ==== PROFILE STUDENT ====
+    case 'profileStudent':
+        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'student') {
             header("Location: index.php?mod=user&act=loginStudent");
             exit;
         }
@@ -198,7 +199,7 @@ switch ($act) {
         $user_id = $_SESSION['user']['user_id'];
         $user = $UserModel->getUserById($user_id);
 
-        // Nếu submit form update
+        // Update profile
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = $_POST['username'] ?? $user['username'];
             $email    = $_POST['email'] ?? $user['email'];
@@ -210,24 +211,63 @@ switch ($act) {
                 'phone'    => trim($phone)
             ];
 
-            $updated = $UserModel->updateUser($user_id, $data);
-
-            if ($updated) {
-                // Cập nhật lại session
+            if ($UserModel->updateUser($user_id, $data)) {
                 $_SESSION['user']['username'] = $data['username'];
                 $_SESSION['user']['email']    = $data['email'];
-                $success = "Cập nhật thông tin thành công!";
-                $user = $UserModel->getUserById($user_id); // load lại dữ liệu
+                $success = "Cập nhật thành công!";
+                $user = $UserModel->getUserById($user_id);
             } else {
-                $error = "Không thể cập nhật thông tin!";
+                $error = "Không thể cập nhật!";
             }
         }
 
-        // Lấy danh sách khóa học đã mua
+        // Lấy khóa học đã mua
         $courses = $UserModel->getPurchasedCourses($user_id);
 
-        include "../site/view/profile_student.php";
+        include "../site/view/login/profile_student.php";
         break;
+
+
+    // ==== PROFILE TEACHER ====
+    case 'profileTeacher':
+        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'teacher') {
+            header("Location: index.php?mod=user&act=loginTeacher");
+            exit;
+        }
+
+        $user_id = $_SESSION['user']['user_id'];
+        $user = $UserModel->getUserById($user_id);
+
+        // Update profile
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $username = $_POST['username'] ?? $user['username'];
+            $email    = $_POST['email'] ?? $user['email'];
+            $phone    = $_POST['phone'] ?? $user['phone'];
+
+            $data = [
+                'username' => trim($username),
+                'email'    => trim($email),
+                'phone'    => trim($phone)
+            ];
+
+            if ($UserModel->updateUser($user_id, $data)) {
+                $_SESSION['user']['username'] = $data['username'];
+                $_SESSION['user']['email']    = $data['email'];
+                $success = "Cập nhật thành công!";
+                $user = $UserModel->getUserById($user_id);
+            } else {
+                $error = "Không thể cập nhật!";
+            }
+        }
+
+        // Lấy danh sách khóa học của teacher
+        require_once "../site/model/Course.php";
+        $CourseModel = new Course();
+        $myCourses = $CourseModel->getCoursesByTeacher($user_id);
+        $teacher = $user;
+        include "../site/view/login/profile_teacher.php";
+        break;
+
 
     default:
         echo "Không tìm thấy chức năng phù hợp!";

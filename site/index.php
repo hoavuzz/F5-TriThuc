@@ -14,16 +14,41 @@ switch ($ctrl) {
 
         include_once "../site/controller/UserController.php";
         break;
-   
-    case 'cart';
-        include_once "../site/controller/cartcontroller.php";
+    case 'checkout':
+        require_once('controller/CheckoutController.php');
+        // $controller = new CheckoutController();
+        // $controller->checkout();
         break;
-        case 'course':
+    case 'cart':
+        require_once("controller/CartController.php");
+        $controller = new CartController();
+        $act = $_GET['act'] ?? 'show';
+
+        switch ($act) {
+            case 'show':
+                $controller->showCart();
+                break;
+
+            case 'add':
+                $controller->addToCart(); // <--- Thêm dòng này
+                break;
+            case 'delete':
+                $controller->delete();
+                break;
+            default:
+                echo "404 - Không tìm thấy hành động trong giỏ hàng!";
+                break;
+        }
+        break;
+    case 'course':
         include_once "../site/controller/CourseController.php";
+        break;
+    case 'quiz':
+        include_once "../site/controller/Quiz-controller.php";
+        // include_once "../site/view/quiz.php";
         break;
     default:
 
         break;
-
 }
 include_once("../site/view/footer.php");

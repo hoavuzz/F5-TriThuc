@@ -7,18 +7,20 @@ $act = $_GET['act'] ?? 'list';
 
 switch ($act) {
     case 'list':
+
         $courses = $CourseModel->getAllCourses();
-        include "../admin/view/list.php";
+        include "../admin/view/course/course-list.php";
         break;
 
     case 'add':
+       
+        // $categories = $categoryModel->getCategoryNameById($category_id);
+        $categories = $pdo->query("SELECT category_id, name FROM categories")->fetchAll(PDO::FETCH_ASSOC);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Upload ảnh
-            $image = null;
-            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                $image = uniqid("course_") . "." . $ext;
-                move_uploaded_file($_FILES['image']['tmp_name'], __DIR__ . "/../../uploads/courses/" . $image);
+            $imageName = '';
+            if (!empty($_FILES['image']['name'])) {
+                $imageName = time() . "_" . basename($_FILES['image']['name']);
+                move_uploaded_file($_FILES['image']['tmp_name'], "../uploads/courses/" . $imageName);
             }
 
             $data = [
@@ -26,28 +28,33 @@ switch ($act) {
                 'category_id' => $_POST['category_id'],
                 'name'        => $_POST['name'],
                 'price'       => $_POST['price'],
-                'image'       => $image,
+                'image'       => $imageName,
                 'description' => $_POST['description'],
+                'views'       => $_POST['views'] ?? 0,
                 'language'    => $_POST['language']
             ];
             $CourseModel->addCourse($data);
             header("Location: index.php?mod=course&act=list");
             exit;
         }
-        include "../view/course/add.php";
+        include "../admin/view/course/course-add.php";
         break;
 
     case 'edit':
         $id = $_GET['id'] ?? 0;
         $course = $CourseModel->getCourseById($id);
+        if (!$course) {
+            die("Khóa học không tồn tại!");
+        }
+
+        // $teachers = $pdo->query("SELECT teacher_id, name FROM teachers")->fetchAll(PDO::FETCH_ASSOC);
+        $categories = $pdo->query("SELECT category_id, name FROM categories")->fetchAll(PDO::FETCH_ASSOC);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Xử lý upload ảnh (nếu có)
-            $image = $course['image'];
-            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                $image = uniqid("course_") . "." . $ext;
-                move_uploaded_file($_FILES['image']['tmp_name'], __DIR__ . "/../../uploads/courses/" . $image);
+            $imageName = $course['image'];
+            if (!empty($_FILES['image']['name'])) {
+                $imageName = time() . "_" . basename($_FILES['image']['name']);
+                move_uploaded_file($_FILES['image']['tmp_name'], "../uploads/courses/" . $imageName);
             }
 
             $data = [
@@ -55,16 +62,16 @@ switch ($act) {
                 'category_id' => $_POST['category_id'],
                 'name'        => $_POST['name'],
                 'price'       => $_POST['price'],
-                'image'       => $image,
+                'image'       => $imageName,
                 'description' => $_POST['description'],
+                'views'       => $_POST['views'],
                 'language'    => $_POST['language']
             ];
             $CourseModel->updateCourse($id, $data);
             header("Location: index.php?mod=course&act=list");
             exit;
         }
-
-        include "../view/course/edit.php";
+        include "../admin/view/course/course-edit.php";
         break;
 
     case 'delete':

@@ -1,94 +1,92 @@
-
-
-    <!-- Main Content -->
-    <main class="main">
-      <header class="topbar">
-        <h2>User Management</h2>
-        <div class="search-wrapper">
-          <input type="text" placeholder="Search..." />
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background-color: #f8f9fa; }
+        .card { border: none; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .stat-title { font-size: 0.9rem; color: #6c757d; }
+        .stat-value { font-size: 1.5rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container-fluid p-4">
+    <h3 class="mb-4">📊 Sales Dashboard</h3>
+    <div class="row g-3">
+        <div class="col-md-3">
+            <div class="card p-3">
+                <div class="stat-title">Total Revenue</div>
+                <div class="stat-value text-success">$<?= number_format($data['totalRevenue'], 2) ?></div>
+            </div>
         </div>
-        <div class="profile">
-          <span class="bell">🔔<span class="badge">3</span></span>
-          <span class="admin">Admin User</span>
+        <div class="col-md-3">
+            <div class="card p-3">
+                <div class="stat-title">Total Orders</div>
+                <div class="stat-value"><?= $data['totalOrders'] ?></div>
+            </div>
         </div>
-      </header>
+        <div class="col-md-3">
+            <div class="card p-3">
+                <div class="stat-title">Avg Order Value</div>
+                <div class="stat-value">$<?= number_format($data['avgOrderValue'], 2) ?></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3">
+                <div class="stat-title">Returning Customer Rate</div>
+                <div class="stat-value text-primary"><?= number_format($data['returningCustomerRate'], 1) ?>%</div>
+            </div>
+        </div>
+    </div>
 
-      <div class="filters">
-        <input type="text" placeholder="Search users..." />
-        <select>
-          <option>All Roles</option>
-          <option>Admin</option>
-          <option>Manager</option>
-          <option>Customer</option>
-        </select>
-        <select>
-          <option>All Status</option>
-          <option>Active</option>
-          <option>Inactive</option>
-        </select>
-        <button class="create-btn">+ Create New User</button>
-      </div>
+    <div class="row g-3 mt-2">
+        <div class="col-md-8">
+            <div class="card p-3">
+                <h6>Orders Over Time</h6>
+                <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h6>Order Status</h6>
+                <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
 
-      <table class="user-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th>Join Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>#001</td>
-            <td><img src="https://i.pravatar.cc/30?img=1" alt=""> John Smith</td>
-            <td>john.smith@email.com</td>
-            <td><span class="role admin">Admin</span></td>
-            <td><span class="status active">Active</span></td>
-            <td>Jan 15, 2024</td>
-            <td><span class="action edit">✏️</span> <span class="action delete">🗑️</span></td>
-          </tr>
-          <tr>
-            <td>#002</td>
-            <td><img src="https://i.pravatar.cc/30?img=2" alt=""> Sarah Johnson</td>
-            <td>sarah.johnson@email.com</td>
-            <td><span class="role customer">Customer</span></td>
-            <td><span class="status active">Active</span></td>
-            <td>Jan 12, 2024</td>
-            <td><span class="action edit">✏️</span> <span class="action delete">🗑️</span></td>
-          </tr>
-          <tr>
-            <td>#003</td>
-            <td><img src="https://i.pravatar.cc/30?img=3" alt=""> Mike Davis</td>
-            <td>mike.davis@email.com</td>
-            <td><span class="role manager">Manager</span></td>
-            <td><span class="status inactive">Inactive</span></td>
-            <td>Jan 10, 2024</td>
-            <td><span class="action edit">✏️</span> <span class="action delete">🗑️</span></td>
-          </tr>
-          <tr>
-            <td>#004</td>
-            <td><img src="https://i.pravatar.cc/30?img=4" alt=""> Emily Wilson</td>
-            <td>emily.wilson@email.com</td>
-            <td><span class="role customer">Customer</span></td>
-            <td><span class="status active">Active</span></td>
-            <td>Jan 08, 2024</td>
-            <td><span class="action edit">✏️</span> <span class="action delete">🗑️</span></td>
-          </tr>
-        </tbody>
-      </table>
+<script>
+const ordersOverTime = <?= json_encode($data['ordersOverTime']) ?>;
+const orderStatus = <?= json_encode($data['orderStatus']) ?>;
 
-      <div class="pagination">
-        <button class="page active">1</button>
-        <button class="page">2</button>
-        <button class="page">3</button>
-        <button class="page">...</button>
-        <button class="page">10</button>
-      </div>
-    </main>
-  </div>
+new Chart(document.getElementById('lineChart'), {
+    type: 'line',
+    data: {
+        labels: ordersOverTime.map(o => o.date),
+        datasets: [{
+            label: 'Orders',
+            data: ordersOverTime.map(o => o.orders),
+            borderColor: '#0d6efd',
+            backgroundColor: 'rgba(13, 110, 253, 0.2)',
+            fill: true,
+            tension: 0.4
+        }]
+    }
+});
+
+new Chart(document.getElementById('pieChart'), {
+    type: 'doughnut',
+    data: {
+        labels: Object.keys(orderStatus),
+        datasets: [{
+            data: Object.values(orderStatus),
+            backgroundColor: ['#198754', '#ffc107', '#dc3545']
+        }]
+    }
+});
+</script>
 </body>
 </html>

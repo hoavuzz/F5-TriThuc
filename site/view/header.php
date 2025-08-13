@@ -11,8 +11,11 @@
 <body>
 <header>
   <div class="logo">F5</div>
+
+ 
   <nav>
-    <a href="#">Khóa học</a>
+     <a href="index.php?mod=cart">Giỏ hàng</a>
+    <a href="index.php?mod=page">Khóa học</a>
     <a href="#">Tài liệu</a>
     <a href="#">Về chúng tôi</a>
 
@@ -34,17 +37,22 @@
         </div>
       </div>
     <?php else: ?>
-      <!-- Nếu đã đăng nhập -->
-      <div class="dropdown">
-        <a href="javascript:void(0)" onclick="toggleDropdown('userDropdown')">
-          👤 <?php echo htmlspecialchars($_SESSION['user']['username']); ?>
-        </a>
-        <div id="userDropdown" class="dropdown-content">
-          <a href="index.php?mod=user&act=profile">Thông tin cá nhân</a>
-          <a href="index.php?mod=user&act=logout">Đăng xuất</a>
-        </div>
-      </div>
-    <?php endif; ?>
+  <!-- Nếu đã đăng nhập -->
+  <div class="dropdown">
+    <a href="javascript:void(0)" onclick="toggleDropdown('userDropdown')">
+      👤 <?php echo htmlspecialchars($_SESSION['user']['username']); ?>
+    </a>
+    <div id="userDropdown" class="dropdown-content">
+      <?php if ($_SESSION['user']['role'] === 'student'): ?>
+          <a href="index.php?mod=user&act=profileStudent">Thông tin cá nhân</a>
+      <?php elseif ($_SESSION['user']['role'] === 'teacher'): ?>
+          <a href="index.php?mod=user&act=profileTeacher">Thông tin giảng viên</a>
+      <?php endif; ?>
+      <a href="index.php?mod=user&act=logout">Đăng xuất</a>
+    </div>
+  </div>
+<?php endif; ?>
+
   </nav>
 </header>
 

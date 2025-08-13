@@ -107,4 +107,46 @@ class UserModel {
     }
 }
 
+/// home
+function getDashboardStats($conn)
+{
+  // Tổng doanh thu
+  $q1 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total_price) as total FROM orders WHERE status='paid'"));
+  // Tổng đơn
+  $q2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as count FROM orders"));
+  // Trung bình
+  $q3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT AVG(total_price) as avg FROM orders"));
+  // Học viên
+  $q4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as students FROM users WHERE role='student'"));
+  // Giáo viên
+  $q5 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as teachers FROM teachers WHERE verified=1"));
+
+  // Biểu đồ doanh thu theo ngày
+  $chart = mysqli_query($conn, "
+        SELECT DATE(created_at) as day, SUM(total_price) as total
+        FROM orders
+        WHERE status='paid'
+        GROUP BY day
+        ORDER BY day DESC
+        LIMIT 7
+    ");
+
+  $labels = [];
+  $data = [];
+  while ($row = mysqli_fetch_assoc($chart)) {
+    $labels[] = $row['day'];
+    $data[] = $row['total'];
+  }
+
+  return [
+    'revenue' => $q1['total'] ?? 0,
+    'orders' => $q2['count'] ?? 0,
+    'avg_order' => round($q3['avg'] ?? 0),
+    'students' => $q4['students'],
+    'teachers' => $q5['teachers'],
+    'chart_labels' => array_reverse($labels),
+    'chart_data' => array_reverse($data)
+  ];
+}
+
 }

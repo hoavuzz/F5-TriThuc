@@ -14,9 +14,12 @@ require_once("view/header.php");
 
 switch ($ctrl) {
     case 'page':
-        include_once "controller/PageController.php";
-        break;
+        require_once 'config.php';
+        require_once 'controller/PageController.php';
 
+        $controller = new DashboardController($db);
+        $controller->index();
+        break;
     case 'user':
         include_once "controller/UserController.php";
         break;
@@ -29,14 +32,21 @@ switch ($ctrl) {
         include_once "controller/OrderController.php";
         break;
 
+    case 'lesson':
+        include_once "controller/LenssonController.php";
+        break;
+
     case 'course':
         include_once "controller/courseController.php";
         break;
-       
+    case 'category':
+        include_once "controller/categoryController.php";
+        break;
+
 
     default:
         echo "<h2>Module không tồn tại!</h2>";
         break;
 }
 
-require_once("view/admin_footer.php");
+// require_once("view/admin_footer.php");

@@ -15,11 +15,12 @@
     <aside class="sidebar">
       <div class="logo">F5</div>
       <nav>
-        <a class="active" href="#">Dashboard</a>
+        <a class="active" href="index.php?mod=page">Dashboard</a>
        <a href="index.php?mod=user">Users</a>
         <a href="index.php?mod=course">Course</a>
+         <a href="index.php?mod=category">Danh muc</a>
         <a href="#">Orders</a>
-        <a href="#">Analytics</a>
+        <a href="index.php?mod=lesson">Analytics</a>
         <a href="#">Settings</a>
         <a href="index.php?mod=listTeachers">teacher</a>
       </nav>

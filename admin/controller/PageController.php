@@ -1,12 +1,22 @@
 <?php
-//quản lí home, abuot...
-$act = isset($_GET['act']) ? $_GET['act'] : 'home';
-switch ($act) {
-    case 'home':
-        include 'view/home.php';
-        break;
+require_once __DIR__ . '/../model/Home.php';
 
-         default:
-        # code...
-        break;
+class DashboardController {
+    private $model;
+
+    public function __construct($db) {
+        $this->model = new DashboardModel($db);
+    }
+
+    public function index() {
+        $data = [
+            'totalRevenue'         => $this->model->getTotalRevenue(),
+            'totalOrders'          => $this->model->getTotalOrders(),
+            'avgOrderValue'        => $this->model->getAvgOrderValue(),
+            'returningCustomerRate'=> $this->model->getReturningCustomerRate(),
+            'orderStatus'          => $this->model->getOrderStatus(),
+            'ordersOverTime'       => $this->model->getOrdersOverTime()
+        ];
+        require __DIR__ . '/../view/home.php';
+    }
 }

@@ -8,14 +8,30 @@ class CourseModel
         $this->conn = $conn;
     }
 
-    // Lấy tất cả khóa học
-    public function getAllCourses(): array
-    {
-        $stmt = $this->conn->query("SELECT * FROM courses ORDER BY course_id DESC");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+   public function getAllCourses(): array
+{
+    $sql = "
+        SELECT 
+            courses.course_id,
+            courses.teacher_id,
+            courses.category_id,
+            courses.name,
+            courses.price,
+            courses.image,
+            courses.description,
+            courses.views,
+            courses.language,
+            courses.created_at,
+            categories.name AS category_name
+        FROM courses
+        LEFT JOIN categories ON courses.category_id = categories.category_id
+        ORDER BY courses.course_id DESC
+    ";
+    $stmt = $this->conn->query($sql);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
-    // Lấy 1 khóa học theo ID
+
     public function getCourseById(int $id): ?array
     {
         $stmt = $this->conn->prepare("SELECT * FROM courses WHERE course_id = ?");
@@ -24,55 +40,57 @@ class CourseModel
         return $course ?: null;
     }
 
-    // Thêm khóa học
     public function addCourse(array $data): bool
     {
         $stmt = $this->conn->prepare("
-            INSERT INTO courses (teacher_id, category_id, name, price, image, description, language, views, created_at)
-            VALUES (:teacher_id, :category_id, :name, :price, :image, :description, :language, 0, NOW())
+            INSERT INTO courses (teacher_id, category_id, name, price, image, description, views, language, created_at)
+            VALUES (:teacher_id, :category_id, :name, :price, :image, :description, :views, :language, NOW())
         ");
         return $stmt->execute([
-            ':teacher_id'  => $data['teacher_id'],
-            ':category_id' => $data['category_id'],
-            ':name'        => $data['name'],
-            ':price'       => $data['price'],
-            ':image'       => $data['image'],
-            ':description' => $data['description'],
-            ':language'    => $data['language'],
+            ':teacher_id'   => $data['teacher_id'],
+            ':category_id'  => $data['category_id'],
+            ':name'         => $data['name'],
+            ':price'        => $data['price'],
+            ':image'        => $data['image'],
+            ':description'  => $data['description'],
+            ':views'        => $data['views'] ?? 0,
+            ':language'     => $data['language']
         ]);
     }
 
-    // Cập nhật khóa học
     public function updateCourse(int $id, array $data): bool
     {
         $stmt = $this->conn->prepare("
-            UPDATE courses 
+            UPDATE courses
             SET teacher_id = :teacher_id,
                 category_id = :category_id,
                 name = :name,
                 price = :price,
                 image = :image,
                 description = :description,
-                language = :language,
-                updated_at = NOW()
+                views = :views,
+                language = :language
             WHERE course_id = :id
         ");
         return $stmt->execute([
-            ':teacher_id'  => $data['teacher_id'],
-            ':category_id' => $data['category_id'],
-            ':name'        => $data['name'],
-            ':price'       => $data['price'],
-            ':image'       => $data['image'],
-            ':description' => $data['description'],
-            ':language'    => $data['language'],
-            ':id'          => $id
+            ':teacher_id'   => $data['teacher_id'],
+            ':category_id'  => $data['category_id'],
+            ':name'         => $data['name'],
+            ':price'        => $data['price'],
+            ':image'        => $data['image'],
+            ':description'  => $data['description'],
+            ':views'        => $data['views'],
+            ':language'     => $data['language'],
+            ':id'           => $id
         ]);
     }
 
-    // Xóa khóa học
     public function deleteCourse(int $id): bool
     {
         $stmt = $this->conn->prepare("DELETE FROM courses WHERE course_id = ?");
         return $stmt->execute([$id]);
     }
+
 }
+
+

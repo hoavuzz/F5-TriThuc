@@ -1,0 +1,306 @@
+/* Tổng thể */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f8f9fb;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+/* Layout chính */
+.quiz-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background-color: #fff;
+  border-right: 1px solid #e0e0e0;
+  padding: 24px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.03);
+}
+
+.sidebar h3 {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #555;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 12px 14px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.2s ease;
+}
+
+.sidebar li i {
+  color: #a54bcf;
+}
+
+.sidebar li:hover,
+.sidebar li.active {
+  background: #f1eaff;
+  color: #a54bcf;
+  font-weight: 500;
+}
+
+/* Nội dung chính */
+.main-content {
+  flex-grow: 1;
+  padding: 40px;
+  background-color: #f8f9fb;
+}
+
+.section-header {
+  font-size: 20px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  color: #444;
+}
+
+/* Label và select */
+label {
+  display: block;
+  margin: 16px 0 6px;
+  font-size: 14px;
+  color: #555;
+}
+
+select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+select:focus {
+  border-color: #a54bcf;
+  outline: none;
+}
+
+/* Button loại câu hỏi */
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.type-btn {
+  padding: 10px 16px;
+  border-radius: 24px;
+  border: 1.5px solid #a54bcf;
+  background: white;
+  color: #a54bcf;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.type-btn.active,
+.type-btn:hover {
+  background: linear-gradient(to right, #f853a1, #a54bcf);
+  color: white;
+  border: none;
+}
+
+/* Thanh kéo thời gian */
+.time-slider {
+  margin-bottom: 24px;
+}
+
+#time-range {
+  width: 100%;
+  margin-top: 8px;
+  accent-color: #a54bcf;
+}
+
+#time-display {
+  font-weight: bold;
+  color: #a54bcf;
+}
+
+/* Nút tiếp tục */
+.next-btn {
+  padding: 12px 24px;
+  background: linear-gradient(to right, #f853a1, #a54bcf);
+  color: white;
+  border: none;
+  border-radius: 24px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.next-btn:hover {
+  opacity: 0.9;
+}
+
+/* Nút viền hồng giống ảnh */
+.outline-btn {
+  padding: 12px 24px;
+  background: transparent;
+  color: #f853a1;
+  border: 2px solid #f853a1;
+  border-radius: 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.outline-btn:hover {
+  background: #fdf0f5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .quiz-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .main-content {
+    padding: 20px;
+  }
+}
+
+/* Quiz Upload Form - Clean, Modern Look */
+.upload-form {
+    max-width: 600px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    font-family: 'Segoe UI', sans-serif;
+    color: #333;
+}
+
+.upload-form h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #a34ef0;
+    text-align: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #555;
+}
+
+.form-group textarea,
+.form-group input[type="text"],
+.form-group input[type="number"] {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: border-color 0.2s;
+}
+
+.form-group textarea:focus,
+.form-group input:focus {
+    border-color: #a34ef0;
+    outline: none;
+}
+
+.answer-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.answer-row input[type="checkbox"] {
+    transform: scale(1.2);
+    accent-color: #a34ef0;
+}
+
+.answer-row input[type="text"] {
+    flex: 1;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.type-btn {
+    padding: 12px 24px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+/* Button Styles */
+.type-btn i {
+    font-size: 16px;
+}
+
+.type-btn.active {
+    background: linear-gradient(to right, #ff0080, #da1b60);
+    color: #fff;
+}
+
+.type-btn.active:hover {
+    opacity: 0.9;
+}
+
+.type-btn:not(.active) {
+    background: transparent;
+    border: 2px solid #a34ef0;
+    color: #a34ef0;
+}
+
+.type-btn:not(.active):hover {
+    background: #a34ef0;
+    color: #fff;
+}
+
+/* Done button specific */
+.type-btn.done {
+    background: linear-gradient(to right, #00c851, #007e33);
+    color: #fff;
+}
+
+.type-btn.done:hover {
+    opacity: 0.9;
+}
